@@ -9,5 +9,17 @@ $(document).ready(function () {
       type: "click",
       noToggleAnimation: true,
     });
+
+    setTimeout(function() {
+      if (window.location.hash) {
+        const targetId = window.location.hash.substring(1);
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+          targetElement.scrollIntoView();
+        }
+      }
+    }, 10);
+    //very small delay as there is no animation
   }
 });

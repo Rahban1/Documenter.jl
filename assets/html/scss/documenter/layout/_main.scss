@@ -51,7 +51,8 @@
       display: flex;
       .breadcrumb {
         flex-grow: 1;
-        overflow-x: auto;
+        overflow-x: hidden;
+        overflow-y: hidden;
       }
 
       .docs-sidebar-button {

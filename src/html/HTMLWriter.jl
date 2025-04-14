@@ -91,6 +91,8 @@ const ASSETS = normpath(joinpath(@__DIR__, "..", "..", "assets", "html"))
 const ASSETS_SASS = joinpath(ASSETS, "scss")
 "Directory for the compiled CSS files of the themes."
 const ASSETS_THEMES = joinpath(ASSETS, "themes")
+# Regular expression for an `@ref` link url, copied from cross_references.jl
+const XREF_REGEX = r"^\s*@ref(\s.*)?$"
 
 struct HTMLAsset
     class::Symbol
@@ -2274,9 +2276,19 @@ domify(::DCtx, ::Node, m::MarkdownAST.LineBreak) = DOM.Tag(:br)()
 const LinkElements = Union{MarkdownAST.Link, Documenter.PageLink, Documenter.LocalLink}
 function domify(dctx::DCtx, node::Node, link::LinkElements)
     droplinks = dctx.droplinks
-    url = filehref(dctx, node, link)
+    render_as_link = !droplinks
+    if link isa MarkdownAST.Link
+        if occursin(XREF_REGEX, link.destination) 
+            render_as_link = false
+        end
+    end
     link_text = domify(dctx, node.children)
-    return droplinks ? link_text : DOM.Tag(:a)[:href => url](link_text)
+    if render_as_link
+        url = filehref(dctx, node, link)
+        return DOM.Tag(:a)[:href => url](link_text)
+    else
+        return DOM.Tag(:code)(link_text)
+    end
 end
 
 function domify(dctx::DCtx, node::Node, list::MarkdownAST.List)

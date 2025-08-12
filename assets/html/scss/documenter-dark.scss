@@ -174,4 +174,7 @@ html.theme--#{$themename} {
   .gap-4 {
     gap: 1rem;
   }
+  .search-result-link.search-result-selected {
+    background-color: rgba(0, 128, 128, 0.2);
+  }
 }

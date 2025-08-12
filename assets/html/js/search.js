@@ -438,6 +438,44 @@ function runSearchMainCode() {
     }
   }
 
+  $(document).on("keydown", ".documenter-search-input", function (event) {
+    let results = $(".search-result-link");
+    if (results.length === 0) {
+      return;
+    }
+
+    let selected = $(".search-result-selected");
+    let current_index = -1;
+    if (selected.length > 0) {
+      current_index = results.index(selected);
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      if (current_index < results.length - 1) {
+        let next_index = current_index + 1;
+        results.removeClass("search-result-selected");
+        let next_result = $(results[next_index]);
+        next_result.addClass("search-result-selected");
+        next_result[0].scrollIntoView({ block: "nearest" });
+      }
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (current_index > 0) {
+        let prev_index = current_index - 1;
+        results.removeClass("search-result-selected");
+        let prev_result = $(results[prev_index]);
+        prev_result.addClass("search-result-selected");
+        prev_result[0].scrollIntoView({ block: "nearest" });
+      }
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      if (selected.length > 0) {
+        window.location.href = selected.attr("href");
+      }
+    }
+  });
+
   $(document).on("input", ".documenter-search-input", function (event) {
     if (!worker_is_running) {
       launch_search();
